@@ -21,8 +21,6 @@ env:
   BIN_NAME: coredns
   TZ: Asia/Shanghai
 
-permissions: read-all|write-all
-
 jobs:
   buildAndDeploy:
     runs-on:  ubuntu-latest
