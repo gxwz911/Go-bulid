@@ -61,6 +61,7 @@ jobs:
       run: |
         git clone $REPO_URL -b $REPO_BRANCH $DIR_NAME
         ln -sf /workdir/$DIR_NAME $GITHUB_WORKSPACE/$DIR_NAME
+        cd $DIR_NAME
         make
       env:
         GOOS: ${{ matrix.goos }}
