@@ -11,13 +11,15 @@ on:
         
 permissions: read-all|write-all
 
-#REPO_URL：源码链接，REPO_BRANCH：源码分支，DIR_NAME：源码所在目录名，BIN_NAME：二进制文件名
+#REPO_URL：源码链接，REPO_BRANCH：源码分支，DIR_NAME：源码所在目录名，BIN_NAME：二进制文件名，goarch: amd64、i386、arm64，goos: linux、windows、drawin 
 env:
   GITHUB_TOKEN: ${{ secrets.GOACTION }}  
   UPLOAD_RELEASE: true
   REPO_URL: https://github.com/gxwz911/coredns  
   REPO_BRANCH: master
   DIR_NAME: coredns
+  GOARCH: amd64
+  GOOS: linux
   BIN_NAME: coredns
   TZ: Asia/Shanghai
   
@@ -26,12 +28,12 @@ jobs:
     runs-on:  ubuntu-latest
     #env:
       #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    # 交叉构建,多平台交叉编译。goarch: amd64、i386、arm64，goos: linux、windows、drawin 
+    # 交叉构建,多平台交叉编译。
     strategy:
       matrix:
         include:
-          - goarch: amd64
-            goos: linux
+          - goarch: ${{ env.GOARCH }}
+            goos: ${{ env.GOOS }}
     # 使用checkout
     steps:
     - uses: actions/checkout@main
@@ -73,7 +75,7 @@ jobs:
         GOARCH: ${{ matrix.goarch }}  
         
     - name: Packaging...
-      run: tar czf ${{ env.BIN_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ${{ env.BIN_NAME }}
+      run: tar czf ${{ env.BIN_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ${{ env.BIN_NAME }}-${{ env.GOOS }}-${{ env.GOARCH }}
       
     - name: Generate release tag
       id: tag
