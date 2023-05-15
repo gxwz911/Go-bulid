@@ -71,19 +71,23 @@ jobs:
         
     - name: Packaging...
       run: tar czf $BIN_NAME-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz $BIN_NAME
-    - name: Get version
-      id: version
-      run: echo "::set-output name=version::$(git rev-parse --short HEAD)"
       
-    - name: Gets latest created release info
-      uses: "marvinpinto/action-automatic-releases@latest"
+    - name: Generate release tag
+      id: tag
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      run: |
+        echo "::set-output name=release_tag::$(date +"%Y.%m.%d-%H%M")"
+        touch release.txt
+        echo "::set-output name=status::success"
+        
+    - name: Upload firmware to release
+      uses: softprops/action-gh-release@v1
+      if: steps.tag.outputs.status == 'success' && !cancelled()
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag:  ${{ steps.version.outputs.version }}
-          prerelease: true
-          title: "Development Build"
-          files: |
-            ./$BIN_NAME-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz
+        tag_name: ${{ steps.tag.outputs.release_tag }}
+        files: $BIN_NAME-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz
             
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
