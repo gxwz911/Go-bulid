@@ -70,7 +70,7 @@ jobs:
         GOARCH: ${{ matrix.goarch }}  
         
     - name: Packaging...
-      run: tar czf env.BIN_NAME-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz $BIN_NAME
+      run: tar czf ${{ env.BIN_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ${{ env.BIN_NAME }}
       
     - name: Generate release tag
       id: tag
@@ -87,7 +87,7 @@ jobs:
         #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
-        files: env.BIN_NAME-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz
+        files: ${{ env.BIN_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz
             
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
