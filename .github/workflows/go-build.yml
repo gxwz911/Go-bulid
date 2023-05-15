@@ -9,7 +9,7 @@ on:
         required: false
         default: 'false'
 
-#REPO_URL：源码链接，REPO_BRANCH：源码分支，DIR_NAME：源码所在目录名，BIN_NAME：二进制文件名，goarch: amd64、i386、arm64，goos: linux、windows、drawin 
+#REPO_URL：源码链接，REPO_BRANCH：源码分支，DIR_NAME：源码所在目录名，BIN_NAME：二进制文件名。
 env:
   GITHUB_TOKEN: ${{ secrets.GOACTION }}  
   UPLOAD_RELEASE: true
@@ -24,7 +24,7 @@ jobs:
     runs-on:  ubuntu-latest
     #env:
       #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    # 交叉构建,多平台交叉编译。
+    # 交叉构建,多平台交叉编译。goarch: amd64、i386、arm64，goos: linux、windows、drawin。
     strategy:
       matrix:
         include:
