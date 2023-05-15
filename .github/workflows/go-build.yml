@@ -1,0 +1,62 @@
+name: Publish Go Binary
+
+on:
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      ssh:
+        description: 'SSH connection to Actions'
+        required: false
+        default: 'false'
+        
+env:
+  GITHUB_TOKEN: ${{ secrets.GOACTION }}  
+  REPO_URL: https://github.com/coredns/coredns  
+  REPO_BRANCH: master
+  DIR_NAME: coredns
+  TZ: Asia/Shanghai
+  
+jobs:
+  buildAndDeploy:
+    runs-on:  ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # 交叉构建,多平台交叉编译
+    strategy:
+      matrix:
+        include:
+          - goarch: amd64
+            goos: linux
+    # 使用checkout
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Go
+      uses: actions/setup-go@v3
+      with: 
+        go-version: '>=1.16.0'
+    - run: go version
+    - name: make
+      run: |
+        sudo timedatectl set-timezone "$TZ"
+        sudo mkdir -p /workdir
+        sudo chown $USER:$GROUPS /workdir
+        git clone $REPO_URL -b $REPO_BRANCH $DIR_NAME
+        ln -sf /workdir/$DIR_NAME $GITHUB_WORKSPACE/$DIR_NAME
+        make
+      env:
+        GOOS: ${{ matrix.goos }}
+        GOARCH: ${{ matrix.goarch }}            
+    - name: Packaging...
+      run: tar czf nodeUpgrade-${{ matrix.goos }}-${{ matrix.goarch }}.tgz nodeUpgrade
+    - name: Get version
+      id: version
+      run: echo "::set-output name=version::$(git rev-parse --short HEAD)"
+    - name: Gets latest created release info
+      uses: "marvinpinto/action-automatic-releases@latest"
+      with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag:  ${{ steps.version.outputs.version }}
+          prerelease: true
+          title: "Development Build"
+          files: |
+            ./nodeUpgrade-${{ matrix.goos }}-${{ matrix.goarch }}.tgz              
