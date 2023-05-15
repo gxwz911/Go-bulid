@@ -45,8 +45,6 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
-        echo "GOARCH=$goarch" >> $GITHUB_ENV
-        echo "GOOS=$goos" >> $GITHUB_ENV
     
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -73,7 +71,7 @@ jobs:
         GOARCH: ${{ matrix.goarch }}  
         
     - name: Packaging...
-      run: tar czf ${{ env.BIN_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ${{ env.BIN_NAME }}-${{ env.GOOS }}-${{ env.GOARCH }}
+      run: tar czf ${{ env.BIN_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ${{ env.BIN_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}
       
     - name: Generate release tag
       id: tag
