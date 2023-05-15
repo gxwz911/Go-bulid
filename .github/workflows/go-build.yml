@@ -20,7 +20,9 @@ env:
   GOOS: linux
   BIN_NAME: coredns
   TZ: Asia/Shanghai
-  
+
+permissions: read-all|write-all
+
 jobs:
   buildAndDeploy:
     runs-on:  ubuntu-latest
@@ -30,8 +32,8 @@ jobs:
     strategy:
       matrix:
         include:
-          - goarch: ${{ env.GOARCH }}
-            goos: ${{ env.GOOS }}
+          - goarch: $GOARCH
+            goos: $GOOS
     # 使用checkout
     steps:
     - uses: actions/checkout@main
