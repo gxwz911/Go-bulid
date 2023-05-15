@@ -34,12 +34,15 @@ jobs:
       uses: actions/setup-go@v3
       with: 
         go-version: '>=1.16.0'
-    - run: go version
-    - name: make
-      run: |
+    #- run: go version    #
+    - run: |
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
+    - name: Make
+      working-directory: /workdir
+      run: |
+
         git clone $REPO_URL -b $REPO_BRANCH $DIR_NAME
         ln -sf /workdir/$DIR_NAME $GITHUB_WORKSPACE/$DIR_NAME
         make
