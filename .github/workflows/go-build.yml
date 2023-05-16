@@ -45,8 +45,6 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
-        chmod +x DIY.sh
-        bash DIY.sh
     
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -66,6 +64,8 @@ jobs:
       run: |
         git clone $REPO_URL -b $REPO_BRANCH $DIR_NAME
         ln -sf /workdir/$DIR_NAME $GITHUB_WORKSPACE/$DIR_NAME
+        chmod +x DIY.sh
+        bash DIY.sh
         cd $DIR_NAME
         make
       env:
