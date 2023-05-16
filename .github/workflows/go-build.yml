@@ -45,6 +45,7 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
+        cp DIY.sh /workdir/DIY.sh
     
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -87,7 +88,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
-        files: ${{ env.BIN_NAME }}
+        files: $GITHUB_WORKSPACE/$DIR_NAME/${{ env.BIN_NAME }}
             
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
