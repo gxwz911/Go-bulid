@@ -10,5 +10,4 @@
 # Description: OpenWrt DIY script part 1 (Before Update feeds)
 
 # Add wgsd
-echo "" >> coredns/plugin.cfg
 echo "wgsd:github.com/jwhited/wgsd" >> coredns/plugin.cfg
