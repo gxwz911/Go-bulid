@@ -86,10 +86,10 @@ jobs:
       uses: softprops/action-gh-release@v1
       if: steps.tag.outputs.status == 'success' && !cancelled()
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}-${{ env.GOOS }}-${{ env.GOARCH }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
-        files: $GITHUB_WORKSPACE/$DIR_NAME/${{ env.BIN_NAME }}
+        files: $GITHUB_WORKSPACE/$DIR_NAME/${{ env.BIN_NAME }}-${{ env.GOOS }}-${{ env.GOARCH }}
             
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
