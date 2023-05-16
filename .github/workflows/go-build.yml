@@ -13,7 +13,7 @@ on:
 env:
   GITHUB_TOKEN: ${{ secrets.GOACTION }}  
   UPLOAD_RELEASE: true
-  REPO_URL: https://github.com/gxwz911/coredns  
+  REPO_URL: https://github.com/coredns/coredns  
   REPO_BRANCH: master
   DIR_NAME: coredns
   BIN_NAME: coredns
@@ -45,6 +45,8 @@ jobs:
         sudo timedatectl set-timezone "$TZ"
         sudo mkdir -p /workdir
         sudo chown $USER:$GROUPS /workdir
+        chmod +x DIY.sh
+        bash DIY.sh
     
     - name: Set up Go
       uses: actions/setup-go@v4
@@ -70,9 +72,6 @@ jobs:
         GOOS: ${{ matrix.goos }}
         GOARCH: ${{ matrix.goarch }}  
         
-    - name: Packaging...
-      run: tar czf ${{ env.BIN_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz ${{ env.BIN_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}
-      
     - name: Generate release tag
       id: tag
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
@@ -88,7 +87,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
-        files: ${{ env.BIN_NAME }}-${{ matrix.goos }}-${{ matrix.goarch }}.tar.gz
+        files: ${{ env.BIN_NAME }}
             
     - name: Delete workflow runs
       uses: GitRML/delete-workflow-runs@main
