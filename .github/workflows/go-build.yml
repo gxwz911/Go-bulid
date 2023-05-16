@@ -69,6 +69,7 @@ jobs:
         /workdir/DIY.sh
         cd $DIR_NAME
         make
+        cp $BIN_NAME $BIN_NAME-${{ matrix.goos }}-${{ matrix.goarch }}
       env:
         GOOS: ${{ matrix.goos }}
         GOARCH: ${{ matrix.goarch }}  
@@ -85,7 +86,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       if: steps.tag.outputs.status == 'success' && !cancelled()
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}-${{ env.GOOS }}-${{ env.GOARCH }}
       with:
         tag_name: ${{ steps.tag.outputs.release_tag }}
         files: $GITHUB_WORKSPACE/$DIR_NAME/${{ env.BIN_NAME }}
@@ -97,7 +98,7 @@ jobs:
         keep_minimum_runs: 3
 
     - name: Remove old Releases
-      uses: dev-drprasad/delete-older-releases@v0.1.0
+      uses: dev-drprasad/delete-older-releases@v0.2
       if: env.UPLOAD_RELEASE == 'true' && !cancelled()
       with:
         keep_latest: 3
